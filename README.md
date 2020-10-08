@@ -57,7 +57,7 @@ courtesy of the [GitHub HTML Preview
 service](http://htmlpreview.github.io/):
 
   - [Introduction to
-    lorenzgini](http://htmlpreview.github.io/?https://github.com/wsteenbeek/lorenzgini/blob/master/doc/lorenzgini.html)
+    lorenzgini](http://htmlpreview.github.io/?https://github.com/wsteenbeek/lorenzgini/blob/main/doc/lorenzgini.html)
 
 If instead you want to access the vignettes from R itself you need to
 take a few additional steps, because `remotes::install_github()` does

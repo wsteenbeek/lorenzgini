@@ -64,7 +64,7 @@ The package includes a vignette explaining the background and the functions in
 
 By far the easiest way to view the vignette is this direct link, courtesy of the [GitHub HTML Preview service](http://htmlpreview.github.io/):
 
-- [Introduction to lorenzgini](http://htmlpreview.github.io/?https://github.com/wsteenbeek/lorenzgini/blob/master/doc/lorenzgini.html)
+- [Introduction to lorenzgini](http://htmlpreview.github.io/?https://github.com/wsteenbeek/lorenzgini/blob/main/doc/lorenzgini.html)
 
 If instead you want to access the vignettes from R itself you need to take a few additional steps, because `remotes::install_github()` does not build vignettes by default to save time and because it may require additional packages. 
 
