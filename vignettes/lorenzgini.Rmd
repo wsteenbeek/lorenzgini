@@ -1,0 +1,219 @@
+---
+title: "The 80-20 rule revisited with the lorenzgini package"
+author: "Wim Bernasco & Wouter Steenbeek"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The 80-20 rule revisited with the lorenzgini package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Inequalities in income, health, crime and other phenomena can be visualized with the Lorenz curve and quantified with the Gini coefficient. However, these methods are biased when data are discrete and sparse. We demonstrate why, and propose an alternative measure, the generalized Gini.
+
+```{r, echo = TRUE, eval = TRUE, warning = FALSE, message = FALSE}
+library("lorenzgini")
+```
+
+## Unequal distributions
+
+### 80-20 rule
+
+Most people have heard about the 80-20 rule. This rule is also known as the Pareto principle, after the Italian mathematician Vilfreo Pareto, who established in 1906 that 80 percent of the property in Italy was owned by the most affluent 20 percent of the population. The key point of the 80-20 rule is that most things in life are unequally distributed. The rule applies to many phenomena, not only to the distribution property amongst people. 
+
+Applications of the 80-20 rule are all around, and it is easy to make up dozens of examples. Three examples (not necessarily true) are:
+
+*	80 percent of total production is created by 20 percent of employees
+
+*	80 percent of your tasks is completed in 20 percent of your time
+
+*	80 percent of  kilometers is driven by 20 percent of cars
+
+The numbers 80 and 20 are easy to remember but are not at all set in stone. The key point is about unequal distributions, and inequalities are also indicated by 80-10, 90-30 and other combinations (and there is no reason at all for both numbers to sum to 100). 
+
+
+### Lorenz curve
+
+Unequal distributions can be nicely visualized with a so-called Lorenz curve, named after the American economist Max Otto Lorenz. Figure 1 provides an example of a Lorenz curve of the unequal distribution of property.
+
+The horizontal axis of the graph shows the percentage of the population, ordered from most to least affluent. The percentage 10 thus refers to the richest 10 per cent of the population, the percentage 20 to the  richest 20 per cent. The vertical axis indicates which cumulative percentage of all assets is owned by the group on the horizontal axis. The unbroken curved line is the Lorenz curve. By following the curve we not only learn that the richest 20 per cent of the population has 80 per cent of the possessions, but also that the richest 10 per cent owns half of all assets, and that the richest 60 per cent own more than 90 per cent. of all assets.
+
+The Lorenz curve always runs above the diagonal (unless the x-axis is reversed to run from high to low). On this diagonal line there is maximal equality as the distribution is perfectly proportional: 10 percent of the population has 10 of the assets, 20 percent has 20 percent and 90 percent has 90 percent.
+
+```{r, echo = FALSE, fig.show = 'hold', fig.height = 4, fig.width = 4, fig.align = "center", fig.cap="Figure 1: Lorenz curve"}
+crimes <- c(22,18,17,12,11,8,6,3,2,1)
+lorenz(crimes, prop = FALSE)
+```
+
+
+### Gini coefficient
+
+A distribution is more uneven as the Lorenz curve lies further above the line of maximum equality. As the Lorenz curve moves up, the area between these two lines (the area between the Lorenz curve and the diagonal Figure 1) grows and the area above the Lorenz curve shrinks. The ratio between these areas is the Gini coefficient, and is named after the Italian statistician Corrado Gini. The Gini coefficient is an index by which we measure how unequal a certain characteristic is distributed in the population. Its value ranges between 0 and 1. If the value is 0 there is full equality, if it is 1 inequality is maximal.
+
+
+## Unequal distribution of crime
+
+The 80-20 often applies to criminal phenomena. For example, a relatively small percentage of persistent offenders perpetrate a substantial part of all crime, and even amongst victims there is concentration of victimization amongst vulnerable risk groups: individuals who are repeatedly victimized.
+
+The 80-20 rule typically applies in the geography of crime. Crime in unequally distributed across space, and a relatively small set of neighborhoods, streets or even addresses are *hotspots* of crime. 
+
+
+### Small units, big problems
+
+Over the past century, research into the geographical distribution of crime has focused on neighborhoods. Because large differences also exists within neighborhoods, smaller spatial units are increasingly being studied, such as streets, street segments, or even individual addresses. It turns out that inequality between streets is larger than the inequality between neighborhoods. In 1989 Lawrence Sherman and his colleagues were the first to note that a very large percentage of calls for service in Minneapolis came from a very small percentage of addresses. For example, all robberies (i.e. 100 percent) were reported in just 2.2 percent of the locations, all rapes in 1.2 percent of the locations and all car thefts in 2.7 percent of the locations.
+
+There is, however, a catch that may remain unnoticed. If spatial units of analysis are small (e.g. in case of addresses) there are often more spatial units than crimes, i.e. the crime data are sparse. Common ways of describing inequality then lead to a distorted picture, because the fail to take into account that a proportional distribution of crime is not possible if there are fewer crimes than places.
+
+
+### A solution
+
+There is a simple way to solve the problem. This solution is based on the idea that we should relate an observed degree of equality to the maximum attainable degree of equality for a given number of crimes and spatial units.
+
+Under normal circumstances the line of maximum equality is the diagonal from point (0,0) to point (100, 100). At every point on this line there is a proportional distribution of crimes across locations. If there are fewer offenses than places, there is maximum equality if every crime takes place at another location. The line of maximum equality associated with this does not go from point (0,0) to point (100, 100), but from point (0,0) to point (C / N, 100), where C is the number of crimes and N the number of locations. Although the distribution is not the same, there are locations with 1 offense and other locations without offenses, but it cannot be more equal.
+
+Figure 2 illustrates the alternative approach for situations in which there are more locations than crimes. The dashed line indicates the line of maximum equality in the standard approach. The Gini coefficient is the ratio of the area between the Lorenz curve and the diagonal and the area above the Lorenz curve, and equals .78.
+
+<br>
+
+```{r, echo = FALSE, fig.show = 'hold', fig.height = 4, fig.width = 4, fig.align = "center", fig.cap="Figure 2: Generalized Lorenz curve, 10 places, 3 + 1 + 1 crimes, G = .78, G’ = .58"}
+crimes <- c(3,1,1,rep(0,7))
+lorenz(crimes, prop = FALSE)
+```
+
+<br>
+
+The dotted lines indicate the generalized approach. The Lorenz curve is exactly the same as in the graph on the left. However, the (dotted) line of maximum equality is much steeper. The area between the Lorenz curve and the line of maximum equality is therefore much smaller than in the standard approach. In the generalized approach, the Gini is reduced to .58. Thus, crime is considered less unevenly distributed than it is in the standard approach.
+
+We give a concrete but imaginary example. Suppose a city has 10 neighborhoods and in 2016 one robbery was committed in each of those 10 neighborhoods. And suppose that only 5 robberies are committed the following year, in 5 different neighborhoods. According to the standard approach, the inequality (and therefore the Gini index) increases in the second year because all crimes occur in only half of the neighborhoods. According to the alternative approach, however, the inequality remains the same: the volume of crime has decreased, but the distribution of crimes has not. In other words, the generalized Gini makes a distinction between the amount of crime on the one hand, and the degree to which it is concentrated on the other hand.
+
+
+## The lorenzgini package
+
+The R package `lorenzgini` contains two commands (`gini` and `lorenz`, respectively) that make it easy to calculate either the standard or the generalized Gini coefficient and to plot the corresponding Lorenz curves.
+
+```{r, eval = FALSE, warning = FALSE, message = FALSE}
+library("lorenzgini")
+```
+
+### `lorenz()`
+
+To demonstrate how it works, we first plot a Lorenz curve in a situation where the data are not sparse and there are more events (e.g. crimes) than locations (in R speak: `sum(crimes) > length(crimes)`)
+
+```{r, eval = TRUE, warning = FALSE, message = FALSE, fig.show = 'hold', fig.height = 4, fig.width = 4, fig.align = "center"}
+# 10 spatial units of analysis and 100 events
+crimes <- c(22,18,17,12,11,8,6,3,2,1)
+lorenz(crimes)
+```
+
+Next, we consider a situation in which there are more locations than crimes: 
+
+```{r, eval = TRUE, warning = FALSE, message = FALSE, fig.show = 'hold', fig.height = 4, fig.width = 4, fig.align = "center"}
+# 10 units of analysis and 5 events
+crimes <- c(3,1,1,0,0,0,0,0,0,0)
+lorenz(crimes)
+```
+
+You can rescale the plot so that 'c/n' is moved to the end of the x-axis (and the graph is stretched to the right accordingly) using `lorenz(crimes, rescale = TRUE)`. Rescaling the graph is most useful in situations where the data are very sparse, and the adjusted line of maximal equality becomes almost vertical:
+
+```{r, eval = TRUE, warning = FALSE, message = FALSE, fig.show = 'hold', fig.height = 4, fig.width = 4, fig.align = "center"}
+crimes <- c(3,1,1,rep(0,150))
+lorenz(crimes)
+lorenz(crimes, rescale = TRUE)
+```
+
+### `gini()`
+
+The Gini command calculates the Gini coefficient. Actually, there are four possible versions of the Gini that you can calculate, because in addition to choosing between the standard and the generalized version, you also have a choice between a biased and an unbiased version.
+
+|             |Standard                                |Generalized                              |
+|:------------|:---------------------------------------|:----------------------------------------|
+|**Biased**   |`gini(mydata,generalized=F,unbiased=F)` | `gini(mydata,generalized=T,unbiased=F)` |
+|**Unbiased** |`gini(mydata,generalized=F,unbiased=T)` | `gini(mydata,generalized=T,unbiased=T)` |
+
+The difference between the biased and the unbiased version is that in the unbiased version an additional correction is made. If the number of units is small, the Gini coefficient is biased because it is constrained to be lower than 1, a situation that can be corrected by multiplying the Gini coefficient by `n/(n-1)`, where `n` is the number of units in the sample (Deltas 2003).
+
+```{r}
+crimes <- c(10,8,2,0,0,0,0,0,0,0)
+length(crimes) # units of analysis
+sum(crimes) # crimes
+
+# Standard Gini:
+gini(crimes, generalized = FALSE, unbiased = FALSE)
+
+# Is the same the generalized Gini, as Ncrimes >= Nunits:
+gini(crimes, generalized = TRUE, unbiased = FALSE)
+```
+
+```{r}
+crimes <- c(5,2,1,0,0,rep(0,5))
+length(crimes) # units of analysis
+sum(crimes) # crimes in total
+
+# Standard Gini:
+gini(crimes, generalized = FALSE, unbiased = FALSE)
+
+# Is *not* the same the generalized Gini, as Ncrimes < Nunits:
+gini(crimes, generalized = TRUE, unbiased = FALSE)
+```
+
+```{r}
+# Example of unbiased standard Gini:
+crimes <- c(10, rep(0,9))
+length(crimes) # units of analysis
+sum(crimes) # crimes in total
+
+gini(crimes, generalized = FALSE, unbiased = FALSE)
+# All crime is concentrated in one unit, but the Gini does not equal 1.
+
+crimes <- c(10, rep(0,99))
+crimes
+gini(crimes, generalized = FALSE, unbiased = FALSE)
+
+# As the number of units with 0 crimes increases, the Gini asymptotically
+# approaches 1. This is adjusted in the 'unbiased' Gini, the default in `DescTools`:
+crimes <- c(10, rep(0,9))
+gini(crimes, generalized = FALSE, unbiased = TRUE)
+
+crimes <- c(10, rep(0,99))
+gini(crimes, generalized = FALSE, unbiased = TRUE)
+```
+
+Finally a more realistic example:
+
+```{r, fig.height = 4, fig.width = 4, fig.align = "center", message = FALSE, warning = FALSE }
+# generate crime events from zero-inflated poisson distribution
+set.seed(8722)
+crimes <- ifelse(rbinom(1000, size = 1, prob = .1) > 0, 0, rpois(1000, lambda = 1))
+
+# frequency of crimes
+table(crimes)
+
+# histogram
+ggplot2::qplot(crimes, geom="histogram") 
+
+# Bootstrap-based confidence intervals:
+set.seed(347)
+gini(crimes, conf.level = .95)
+
+# Also output kernel density plot of generated Ginis, e.g. using 1000 simulations:
+gini(crimes, conf.level = .95, R = 1000, plot = TRUE)
+
+# Increasing the number of simulations:
+gini(crimes, conf.level = .95, R = 20000, plot = TRUE)
+```
+
+
+## References
+
+Bernasco, W, and W. Steenbeek. (2017). More Places than Crimes: Implications for Evaluating the Law of Crime Concentration at Place. *Journal of Quantitative Criminology* 33(3): 451–467. Open Access: http://dx.doi.org/10.1007/s10940-016-9324-7
+
+Deltas, G. (2003). The Small-Sample Bias of the Gini Coefficient: Results and Implications for Empirical Research. *Review of Economics and Statistics* 85(1): 226–234.
+
+Sherman, L, P.R. Gartin, and M.E. Buerger. (1989). Hot Spots of Predatory Crime: Routine Activities and the Criminology of Place. *Criminology* 27(1):27–55.
